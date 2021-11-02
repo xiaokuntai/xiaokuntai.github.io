@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>网页标签</title>
+<style>
+       #div1{
+	        width:400px;
+	        height:400px;
+	        position:relative;
+	        margin:50px auto;
+	        background-color:red;
+	   }
+	   .game0{
+	          width:50px;
+	          height:50px;
+	          background-color:#666;
+	          float:left;
+	   }
+	   .game1{
+	   width:50px;
+	   height:50px;
+	   background-image:url(wall.png);
+	   float:left;
+	   }
+	   .game2{
+	   width:50px;
+	   height:50px;
+	   background-color:blue;
+	   float:left;
+	   }
+	   .game3{
+	   width:50px;
+	   height:50px;
+	   background-color:yellow;
+	   float:left;
+	   }
+	   .box{
+	   width:50px;
+	   height:50px;
+	   background-image:url(box.png);
+	   position:absolute;
+	   }
+	   .wugui{
+	   width:50px;
+	   height:50px;
+	   background-image:url(person.png);
+	   position:absolute;
+	   }
+	   </style>
+</head>
+<body>
+<audio  src="推箱子.mp3" autoplay="yes"  loop="loop"  ></audio>
+<div id="div1"></div>
+<script>
+var wrap=document.getElementById("div1");
+ var gk=[
+       {map:[
+		      0,0,1,1,1,0,0,0,
+			  0,0,1,3,1,0,0,0,
+			  0,0,1,2,1,1,1,1,
+			  1,1,1,2,2,2,3,1,
+			  1,3,2,2,2,1,1,1,
+			  1,1,1,1,2,1,0,0,
+			  0,0,0,1,3,1,0,0,
+			  0,0,0,1,1,1,0,0,
+			  ],
+			  box:[
+			       {x:4,y:3},
+			       {x:5,y:4},
+			       {x:5,y:5},
+			       {x:3,y:5}],
+			  wugui:{x:4,y:4}
+			  },  
+	   {map:[
+		      0,1,1,1,1,0,0,0,
+			  0,1,2,2,1,1,1,0,
+			  0,1,2,2,2,2,1,0,
+			  0,1,1,2,1,2,1,0,
+			  1,3,1,2,1,2,2,1,
+			  1,3,2,2,2,1,2,1,
+			  1,3,2,2,2,2,2,1,
+			  1,1,1,1,1,1,1,1,
+			  ],
+			  box:[
+			       {x:4,y:5},
+			       {x:3,y:6},
+			       {x:6,y:7}],
+			  wugui:{x:7,y:5}
+			  },
+			  {map:[
+		      0,0,1,1,1,1,0,0,
+			  0,0,1,3,3,1,0,0,
+			  0,1,1,2,3,1,1,0,
+			  0,1,2,2,2,3,1,0,
+			  1,1,2,2,2,2,1,1,
+			  1,2,2,1,2,2,2,1,
+			  1,2,2,2,2,2,2,1,
+			  1,1,1,1,1,1,1,1,
+			  ],
+			  box:[
+			     {x:4,y:5},
+			     {x:5,y:4},
+			     {x:5,y:6},
+			     {x:6,y:6}
+				  ],
+			  wugui:{x:4,y:7}
+			  }
+			  ];
+			  var thisgk;
+			  var wuguix;
+			  var wuguiy;
+			  var gamecount=0;
+			  var wugui;
+			  var boxs;
+			  var results;
+			  function createMap(x)
+			  {
+			  wrap.innerHTML="";
+			  thisgk=gk[x];
+			  console.log(x);
+			  for(var i=0;i<thisgk.map.length;i++)
+			  {
+			  wrap.innerHTML +="<div class='game"+thisgk.map[i]+"'></div>";
+			  }
+			  for(var j=0;j<thisgk.box.length;j++)
+			  {
+			  var top=(thisgk.box[j].y-1)*50;
+			  var left=(thisgk.box[j].x-1)*50;
+			  wrap.innerHTML +="<div class='box' style='left:"+left+"px;top:"+top+"px'></div>";
+			  }
+			  var top=(thisgk.wugui.y-1)*50;
+			  var left=(thisgk.wugui.x-1)*50;
+			  wuguix=thisgk.wugui.x;
+			  wuguiy=thisgk.wugui.y;
+			  wrap.innerHTML +="<div class='wugui' style='left:"+left+"px;top:"+top+"px'></div>";
+              wugui=document.getElementsByClassName("wugui")[0];
+              boxs=document.getElementsByClassName("box");
+              results=document.getElementsByClassName("game3");
+}
+createMap(gamecount);
+document.onkeydown=function(e)
+{
+switch(e.keyCode)
+{
+case 37:
+wugui.style.backgroundPosition="-150px 0";
+//wugui.style.left=parseInt(wugui.style.left)-50 +"px";
+run(-1,0);
+break;
+case 38:
+wugui.style.backgroundPosition="0 0";
+//wugui.style.top=parseInt(wugui.style.top)-50 +"px";
+run(0,-1);
+break;
+case 39:
+wugui.style.backgroundPosition="-50px 0";
+//wugui.style.left=parseInt(wugui.style.left)+50 +"px";
+run(1,0);
+break;
+case 40:
+wugui.style.backgroundPosition="-100px 0";
+//wugui.style.top=parseInt(wugui.style.top)+50 +"px";
+run(0,1);
+break;
+}
+}
+function run(x,y)
+{
+if(thisgk.map[(wuguiy-1+y)*8+wuguix-1+x]!=1)
+{
+wugui.style.left=parseInt(wugui.style.left)+x*50 +"px";
+wugui.style.top=parseInt(wugui.style.top)+y*50 +"px";
+wuguix=wuguix+x;
+wuguiy=wuguiy+y;
+for(var i=0;i<boxs.length;i++)
+{
+if(pz(wugui,boxs[i])&&thisgk.map[(wuguiy-1+y)*8+wuguix-1+x]!=1)
+{
+boxs[i].style.left=parseInt(boxs[i].style.left)+x*50 +"px";
+boxs[i].style.top=parseInt(boxs[i].style.top)+y*50 +"px";
+for(var j=0;j<boxs.length;j++)
+{
+if(pz(boxs[i],boxs[j])&&(boxs[i]!=boxs[j]))
+{
+boxs[i].style.left=parseInt(boxs[i].style.left)-x*50 +"px";
+boxs[i].style.top=parseInt(boxs[i].style.top)-y*50 +"px";
+wugui.style.left=parseInt(wugui.style.left)-x*50 +"px";
+wugui.style.top=parseInt(wugui.style.top)-y*50 +"px";
+wuguix=wuguix-x;
+wuguiy=wuguiy-y;
+}
+}
+}else if(pz(wugui,boxs[i]))
+{
+wugui.style.left=parseInt(wugui.style.left)-x*50 +"px";
+wugui.style.top=parseInt(wugui.style.top)-y*50 +"px";
+wuguix=wuguix-x;
+wuguiy=wuguiy-y;
+}
+}
+gameOver();
+}
+}
+function gameOver()
+{
+var num=0;
+for(var i=0;i<boxs.length;i++)
+{
+for(var j=0;j<results.length;j++)
+{
+if(pz(boxs[i],results[j]))
+{
+num++;
+}
+}
+}
+	if(num==results.length)
+	{
+		gamecount++;
+		if(gamecount>=gk.length)
+		{
+		}else{   
+			createMap(gamecount);
+		}
+	}
+}
+function pz(obj1,obj2){
+var L1=obj1.offsetLeft;
+var R1=obj1.offsetLeft+obj1.offsetWidth;
+var T1=obj1.offsetTop;
+var B1=obj1.offsetTop+obj1.offsetHeight;
+var L2=obj2.offsetLeft;
+var R2=obj2.offsetLeft+obj2.offsetWidth;
+var T2=obj2.offsetTop;
+var B2=obj2.offsetTop+obj2.offsetHeight;
+if(L1>=R2||R1<=L2||B1<=T2||T1>=B2)
+{
+return false;
+}else{
+return true;
+}
+}
+</script>
+</body>
+</html>
